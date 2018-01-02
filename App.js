@@ -2,17 +2,15 @@ import React, {Component} from 'react'
 import {getNeighbours, universe, evolve, counterMap$} from 'conway-game-of-life-js'
 import {map, range, contains} from 'ramda'
 import {List} from 'immutable'
-import { Button, Text, View } from 'react-native';
+import { Button, Text, View, StatusBar } from 'react-native';
 
 const getCellStyle = (perc, alive) => ({
-  height: 10,
+  height: 1,
   paddingBottom: `${perc}%`,
-  // width: `${perc}%`,
-  border: "1px solid black",
+  borderColor: "black",
+  borderWidth: 1,
   flex: 1,
-  width: 30,
-  // margin: "-1px",
-  backgroundColor: alive ? "#4CAF50" : "white"
+  backgroundColor: alive ? "#4CAF50" : "#424242"
 })
 
 class Cell extends Component {
@@ -22,30 +20,28 @@ class Cell extends Component {
     const [width, height] = size
     const perc = 100 / width
     return (
-      <Text
+      <View
         key={`${x}-${y}`}
         className={`Cell-${x}-${y}`}
         style={getCellStyle(perc, alive)}>
-        {`${x}-${y}`}
-        <View style={{width: 10, height: 10}}>
-          <Text>{counterMap.get(List([x, y]))}</Text>
-        </View>
-      </Text>
+        {/*<Text>{`${x}-${y}`}</Text>*/}
+        {/*<Text>{counterMap.get(List([x, y]))}</Text>*/}
+      </View>
     )
   }
 }
 
 const UniverseStyle = {
   display: "flex",
-  flexDirection: "row",
+  flexDirection: "column",
   width: "100%",
-  // maxWidth: "80vh",
-  // maxHeight: "80wh",
+  borderColor: "black",
+  borderWidth: 1,
   backgroundColor: "#424242"
 }
 
 const RowStyle = {
-  flexDirection: "column"
+  flexDirection: "row"
 }
 
 class Universe extends Component {
@@ -60,7 +56,6 @@ class Universe extends Component {
 
     return (
       <View className="Universe" style={UniverseStyle}>
-        <Text>Universe</Text>
         {
           allCells.map((row) => {
             const rowId = "" + row[0][0]
@@ -120,19 +115,19 @@ class App extends Component {
   render() {
     return (
       <View className="App">
-        <Text>"game of life"</Text>
+        <StatusBar
+          hidden={true}
+        />
         <Universe universe={this.state.universe}/>
         {!this.state.autoEvolveId &&
         <Button
           title={"Evolve"}
           onPress={this.onClickEvolve}>
-
         </Button>
         }
         <Button
           title={this.state.autoEvolveId ? "Stop" : "Auto"}
           onPress={this.onToggleAutoEvolve}>
-
         </Button>
       </View>
     )
