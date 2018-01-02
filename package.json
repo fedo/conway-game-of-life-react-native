@@ -1,5 +1,5 @@
 {
-  "name": "game-of-life-native",
+  "name": "conway-game-of-life-react-native",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
