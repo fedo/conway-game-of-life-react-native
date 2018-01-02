@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {getNeighbours, universe, evolve, counterMap$} from './game-of-life'
+import {getNeighbours, universe, evolve, counterMap$} from 'conway-game-of-life-js'
 import {map, range, contains} from 'ramda'
 import {List} from 'immutable'
 import { Button, Text, View } from 'react-native';
