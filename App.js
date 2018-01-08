@@ -5,7 +5,7 @@ import React, {Component} from 'react'
 import {getNeighbours, universe, evolve} from 'conway-game-of-life-js'
 
 const CYCLES = 1000
-const DELAY = 100
+const DELAY = 0
 
 const getCellStyle = (perc, alive) => ({
   height: 1,
@@ -94,14 +94,17 @@ class App extends Component {
       universe,
       benchmark: {
         result: undefined
-      }
+      },
+      iterations: 0,
+      iterationsMessage: undefined
     }
   }
 
   onClickEvolve = () => {
     this.setState((state) => ({
       ...state,
-      universe: evolve(state.universe)
+      universe: evolve(state.universe),
+      iterations: state.iterations + 1
     }))
   }
 
@@ -116,14 +119,24 @@ class App extends Component {
     })
   }
 
+  autoBenchmark = (state) => (
+    this.setState((state) => ({
+      ...state,
+      iterations: 0,
+      iterationsMessage: `${state.iterations} iterations/second`
+    })))
+
   onToggleAutoEvolve = () => {
     this.setState((state) => {
-      const {autoEvolveId} = state
+      const {autoEvolveId, benchmarkLoggerId} = state
       return {
         ...state,
         autoEvolveId: autoEvolveId
           ? clearInterval(autoEvolveId)
-          : setInterval(() => this.onClickEvolve(), DELAY)
+          : setInterval(() => this.onClickEvolve(), DELAY),
+        benchmarkLoggerId: benchmarkLoggerId
+          ? clearInterval(benchmarkLoggerId)
+          : setInterval(() => this.autoBenchmark(), 1000)
       }
     })
   }
@@ -145,6 +158,8 @@ class App extends Component {
           title={this.state.autoEvolveId ? "Stop" : "Auto"}
           onPress={this.onToggleAutoEvolve}>
         </Button>
+        {this.state.iterationsMessage
+        && <Text>Result: {`${this.state.iterationsMessage}`}</Text>}
         <Button
           title="Benchmark"
           onPress={this.onClickBenchmark}>
