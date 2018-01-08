@@ -1,4 +1,4 @@
-#Game of Life: React Native
+# Game of Life: React Native
 
 ![alt text](docs/ios-simulator-screenshot.png "Screenshot")
 
