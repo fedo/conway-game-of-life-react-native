@@ -1,8 +1,11 @@
+import moment from 'moment'
+import {Button, Text, View, StatusBar} from 'react-native'
+import {assocPath, contains, map, range} from 'ramda'
 import React, {Component} from 'react'
-import {getNeighbours, universe, evolve, counterMap$} from 'conway-game-of-life-js'
-import {map, range, contains} from 'ramda'
-import {List} from 'immutable'
-import { Button, Text, View, StatusBar } from 'react-native';
+import {getNeighbours, universe, evolve} from 'conway-game-of-life-js'
+
+const CYCLES = 1000
+const DELAY = 100
 
 const getCellStyle = (perc, alive) => ({
   height: 1,
@@ -72,7 +75,6 @@ class Universe extends Component {
                     size={size}
                     alive={alive}
                     neighbours={getNeighbours([x, y], this.props.universe)}
-                    counterMap={counterMap$(this.props.universe)}
                   />
                 })}
               </View>
@@ -89,7 +91,10 @@ class App extends Component {
     super(props)
     this.state = {
       autoEvolveId: undefined,
-      universe
+      universe,
+      benchmark: {
+        result: undefined
+      }
     }
   }
 
@@ -100,6 +105,17 @@ class App extends Component {
     }))
   }
 
+  onClickBenchmark = () => {
+    const start = moment()
+    for (let n = 0; n < CYCLES; n++) {
+      this.onClickEvolve()
+    }
+    this.setState((state) => {
+      const end = moment()
+      return assocPath(['benchmark', 'result'], end.diff(start, 'milliseconds'), state)
+    })
+  }
+
   onToggleAutoEvolve = () => {
     this.setState((state) => {
       const {autoEvolveId} = state
@@ -107,7 +123,7 @@ class App extends Component {
         ...state,
         autoEvolveId: autoEvolveId
           ? clearInterval(autoEvolveId)
-          : setInterval(() => this.onClickEvolve(), 500)
+          : setInterval(() => this.onClickEvolve(), DELAY)
       }
     })
   }
@@ -129,6 +145,12 @@ class App extends Component {
           title={this.state.autoEvolveId ? "Stop" : "Auto"}
           onPress={this.onToggleAutoEvolve}>
         </Button>
+        <Button
+          title="Benchmark"
+          onPress={this.onClickBenchmark}>
+        </Button>
+        {this.state.benchmark.result
+        && <Text>Result: {`${this.state.benchmark.result || ''}ms`}</Text>}
       </View>
     )
   }

@@ -19,8 +19,12 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "benchmark": "^2.1.4",
     "conway-game-of-life-js": "git+https://github.com/fedo/conway-game-of-life-js.git",
     "expo": "^23.0.4",
+    "moment": "^2.20.1",
+    "native-base": "^2.3.6",
+    "ramda": "^0.25.0",
     "react": "16.0.0",
     "react-native": "0.50.3"
   }
